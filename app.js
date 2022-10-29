@@ -139,6 +139,6 @@ app.post("/movieData", async (req, res) => {
   // });
 });
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log("app is running at port ", PORT);
 });
