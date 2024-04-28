@@ -6,6 +6,8 @@ const movieURL = BASE_URL + "/movie";
 
 const apiSimilarURL = "https://tastedive.com/api/similar";
 
+const {getSimilarMovies}= require('./similar.js')
+
 const express = require("express");
 const fetch = require("node-fetch");
 const cors = require("cors");
@@ -53,24 +55,39 @@ app.post("/movieData", async (req, res) => {
       // url=movieURL+`/${data}`+"/recommendations"+"?"+API_KEY;
       // url+='&page='+page
       // console.log("selectedMovieIDTitle: ", data);
-      url =
-        apiSimilarURL +
-        "?q=" +
-        encodeURI(data.selectedMovieIDTitle) +
-        "&type=movies";
+      // url =
+      //   apiSimilarURL +
+      //   "?q=" +
+      //   encodeURI(data.selectedMovieIDTitle) +
+      //   "&type=movies";
+
+      //   console.log('similar url : ',url)
       
-       let obj={};
-       try{
-        const res12 = await fetch(url);
-      obj = await res12.json();
-       } 
-       catch(err){
+      //  let obj={};
+      //  try{
+      //   const res12 = await fetch(url);
+      //   obj = await res12.json();
+      //  } 
+      //  catch(err){
+      //   console.log('err tastedive: ',err)
+      //  }
+      
+      // console.log("obj Similar:", obj.Similar.Results);
+      // const SimilarArray = obj.Similar.Results;
+      // const SimilarNames = SimilarArray.map((similar) => similar.Name);
+
+      let similarNameObjArray=[]
+      let SimilarNames=[]
+      try{
+        similarNameObjArray=await getSimilarMovies(data.selectedMovieIDTitle)
+        SimilarNames=similarNameObjArray.map(obj=>obj.entityName)
+      }
+      catch(err){
         console.log('err tastedive: ',err)
-       }
+
+      }
       
-      console.log("obj Similar:", obj.Similar.Results);
-      const SimilarArray = obj.Similar.Results;
-      const SimilarNames = SimilarArray.map((similar) => similar.Name);
+
       console.log("similar names: ", SimilarNames);
 
       const SimilarNamesPromises = SimilarNames.map(async(name) => {
